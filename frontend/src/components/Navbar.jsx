@@ -18,18 +18,16 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-lg border-b border-white/10 shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="px-4 sm:px-6 lg:px-8 xl:px-12">
         <div className="flex justify-between items-center h-16">
-          {/* Logo and Name - Left */}
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">C</span>
-            </div>
-            <Link
-              to="/"
-              className="text-xl font-bold text-white hover:text-purple-300 transition-colors"
-            >
-              ChatApp
+          {/* Logo - Left */}
+          <div className="flex items-center">
+            <Link to="/">
+              <img
+                src="/logo.png"
+                alt="ChatApp Logo"
+                className="w-12 h-12 rounded-lg hover:opacity-80 transition-opacity"
+              />
             </Link>
           </div>
 

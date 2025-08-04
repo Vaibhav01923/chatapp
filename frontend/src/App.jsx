@@ -11,12 +11,21 @@ import { useAuthStore } from "./store/useAuthStore";
 import { Toaster } from "react-hot-toast";
 
 const App = () => {
-  const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
+  const { authUser, checkAuth, isCheckingAuth, disconnectSocket } =
+    useAuthStore();
+
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
-  console.log(authUser);
+  useEffect(() => {
+    // Cleanup socket connection when app unmounts
+    return () => {
+      disconnectSocket();
+    };
+  }, [disconnectSocket]);
+
+  console.log("Current auth user:", authUser);
 
   if (isCheckingAuth && !authUser) {
     return (

@@ -5,14 +5,17 @@ import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import { connectDB } from "./lib/db.js";
 import cors from "cors";
+import { app, server } from "./lib/socket.js";
+import path from "path";
 
 dotenv.config();
-const app = express();
 
 const PORT = process.env.PORT || 5001;
+const __dirname = path.resolve();
 
-// Middleware to parse JSON bodies
-app.use(express.json());
+// Middleware to parse JSON bodies with increased limit for images
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
 app.use(
   cors({
@@ -22,9 +25,17 @@ app.use(
 );
 
 app.use("/api/auth", authRoutes);
-app.use("/api/message", messageRoutes);
+app.use("/api/messages", messageRoutes);
 
-app.listen(PORT, () => {
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+  });
+}
+
+server.listen(PORT, () => {
   console.log("server is running on port: " + PORT);
   connectDB();
 });

@@ -105,9 +105,9 @@ const DotGrid: React.FC<DotGridProps> = ({
     const ctx = canvas.getContext("2d");
     if (ctx) ctx.scale(dpr, dpr);
 
-    const cols = Math.ceil(width / (dotSize + gap)) + 1;
-    const rows = Math.ceil(height / (dotSize + gap)) + 1;
     const cell = dotSize + gap;
+    const cols = Math.floor(width / cell) + 1;
+    const rows = Math.floor(height / cell) + 1;
 
     const startX = dotSize / 2;
     const startY = dotSize / 2;
@@ -138,9 +138,24 @@ const DotGrid: React.FC<DotGridProps> = ({
 
       const { x: px, y: py } = pointerRef.current;
 
+      const canvasWidth = canvas.width / (window.devicePixelRatio || 1);
+      const canvasHeight = canvas.height / (window.devicePixelRatio || 1);
+
       for (const dot of dotsRef.current) {
         const ox = dot.cx + dot.xOffset;
         const oy = dot.cy + dot.yOffset;
+
+        // Skip dots that are outside the visible area (including dot radius)
+        const dotRadius = dotSize / 2;
+        if (
+          ox < -dotRadius ||
+          ox > canvasWidth + dotRadius ||
+          oy < -dotRadius ||
+          oy > canvasHeight + dotRadius
+        ) {
+          continue;
+        }
+
         const dx = dot.cx - px;
         const dy = dot.cy - py;
         const dsq = dx * dx + dy * dy;
